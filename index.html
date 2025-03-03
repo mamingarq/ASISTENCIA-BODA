@@ -4,41 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmación de Asistencia</title>
-    <script>
-        const invitados = ["ivan muñoz", "ana salazar", "luz torres", "Jose Escobar"];
-        const confirmados = [];
-        
-        function verificarInvitado() {
-            const nombre = document.getElementById("nombre").value.trim().toLowerCase();
-            const mensaje = document.getElementById("mensaje");
-            
-            if (invitados.some(inv => inv.toLowerCase() === nombre)) {
-                mensaje.innerHTML = `Bienvenido, ${nombre}. <button onclick="confirmarAsistencia('${nombre}')">Confirmar asistencia</button>`;
-            } else {
-                mensaje.innerHTML = "<span style='font-size: 20px; font-weight: bold;'>Lo sentimos, tu nombre no está en la lista de invitados.</span>";
-            }
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
         }
-        
-        function confirmarAsistencia(nombre) {
+
+        .container {
+            background: white;
+            padding: 20px;
+            max-width: 400px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #2c3e50;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #mensaje {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+        function removerTildes(texto) {
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Quita tildes
+}
+
+const invitados = ["iván muñoz", "ana salazar", "luz torres", "josé escobar"].map(removerTildes);
+const confirmados = [];
+
+function verificarInvitado() {
+    const nombre = removerTildes(document.getElementById("nombre").value.trim().toLowerCase());
+    const mensaje = document.getElementById("mensaje");
+
+    if (invitados.includes(nombre)) {
+        mensaje.innerHTML = `
+            <p><strong style="color:#27ae60;">BIENVENIDO, ${nombre.toUpperCase()}.</strong><br> ¿CONFIRMAS TU ASISTENCIA?</p>
+            <button onclick="confirmarAsistencia('${nombre}', 'Sí')">✅ SÍ</button>
+            <button onclick="confirmarAsistencia('${nombre}', 'No')">❌ NO</button>
+        `;
+    } else {
+        mensaje.innerHTML = "<span style='color: red;'>⚠ LO SENTIMOS, TU NOMBRE NO ESTÁ EN LA LISTA DE INVITADOS.</span>";
+    }
+}
+
+
+        function confirmarAsistencia(nombre, respuesta) {
             if (!confirmados.includes(nombre)) {
-                confirmados.push(nombre);
-                fetch("https://script.google.com/macros/s/AKfycbwyLUQnYsIn0SFFF6mwBWlSLBONicieY2plmgLgL7CIKmJ9x0-qq5v3YaO6mDgFvLAcbQ/exec", {
+                fetch("https://script.google.com/macros/s/AKfycbxC15kwGraxBNf0lajdXkbcLRl0McTWPoqHdIKiGTWSSov-crYusdG-voSDDZG5_Qgfqg/exec", {
                     method: "POST",
                     mode: "no-cors",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ nombre: nombre })
+                    body: JSON.stringify({ nombre: nombre, respuesta: respuesta })
+                })
+                .then(response => response.text())
+                .then(text => {
+                    if (text.includes("Error: Ya confirmaste tu asistencia")) {
+                        mensaje.innerHTML = "<p style='color: red;'>❗ Ya confirmaste tu asistencia. No puedes volver a hacerlo.</p>";
+                    } else {
+                        confirmados.push(nombre);
+                        mensaje.innerHTML = "<p style='color: green;'>✅ Gracias por tu respuesta.</p>";
+                    }
+                })
+                .catch(error => {
+                    mensaje.innerHTML = "<p style='color: red;'>❌ Hubo un error. Inténtalo de nuevo.</p>";
                 });
+            } else {
+                mensaje.innerHTML = "<p style='color: red;'>❗ Ya confirmaste tu asistencia.</p>";
             }
-            document.getElementById("mensaje").innerHTML = "Gracias por confirmar tu asistencia.";
+				
         }
     </script>
 </head>
 <body>
-    <img src="https://raw.githubusercontent.com/mamingarq/LOGO_BODA/main/LOGO_BODA.png" alt="Imagen de bienvenida" style="display: block; margin-left: 0; width: 200px;">
-    <h2>Confirmación de Asistencia</h2>
-    <label for="nombre">Ingresa tu primer nombre y tu primer apellido sin tildes :</label>
-    <input type="text" id="nombre">
-    <button onclick="verificarInvitado()">Verificar</button>
-    <p id="mensaje"></p>
+
+    <div class="container">
+        <img src="https://raw.githubusercontent.com/mamingarq/LOGO_BODA/main/LOGO_BODA.png" alt="Imagen de bienvenida" style="width: 100px; margin-bottom: 10px;">
+        <h2>Confirmación de Asistencia</h2>
+        <p>Ingresa tu primer nombre y apellido (sin tildes):</p>
+        <input type="text" id="nombre" placeholder="Ejemplo: ana salazar">
+        <button onclick="verificarInvitado()">Verificar</button>
+        <p id="mensaje"></p>
+    </div>
+
 </body>
 </html>
