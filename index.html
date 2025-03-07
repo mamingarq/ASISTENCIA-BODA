@@ -66,65 +66,75 @@
 
     <script>
         function removerTildes(texto) {
-    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Quita tildes
-}
+            return texto.normalize("NFD").replace(/[̀-ͯ]/g, ""); // Quita tildes
+        }
 
-const invitados = ["iván muñoz", "ana salazar", "luz torres", "josé escobar"].map(removerTildes);
-const confirmados = [];
+        const invitados = ["iván mateo muñoz martinez", "ana maria salazar torres", "luz adriana torres cardona", "josé escobar"].map(removerTildes);
 
-function verificarInvitado() {
-    const nombre = removerTildes(document.getElementById("nombre").value.trim().toLowerCase());
-    const mensaje = document.getElementById("mensaje");
+        function verificarInvitado() {
+            const nombre = removerTildes(document.getElementById("nombre").value.trim().toLowerCase());
+            const mensaje = document.getElementById("mensaje");
+            
+            for (let inv of invitados) {
+                const nombrePartes = nombre.split(" ");
+                const invitadoPartes = inv.split(" ");
+                if (nombrePartes.some(parte => invitadoPartes.includes(parte)) && localStorage.getItem(inv)) {
+                    mensaje.innerHTML = "<p style='color: red;'>❗ Ya confirmaste tu asistencia. No puedes volver a hacerlo.</p>";
+                    return;
+                }
+            }
 
-    if (invitados.includes(nombre)) {
-        mensaje.innerHTML = `
-            <p><strong style="color:#27ae60;">BIENVENIDO, ${nombre.toUpperCase()}.</strong><br> ¿CONFIRMAS TU ASISTENCIA?</p>
-            <button onclick="confirmarAsistencia('${nombre}', 'Sí')">✅ SÍ</button>
-            <button onclick="confirmarAsistencia('${nombre}', 'No')">❌ NO</button>
-        `;
-    } else {
-        mensaje.innerHTML = "<span style='color: red;'>⚠ LO SENTIMOS, TU NOMBRE NO ESTÁ EN LA LISTA DE INVITADOS.</span>";
-    }
-}
+            const encontrado = invitados.some(inv => {
+                const nombrePartes = nombre.split(" ");
+                return nombrePartes.every(parte => inv.includes(parte));
+            });
 
+            if (encontrado) {
+                mensaje.innerHTML = `
+                    <p><strong style="color:#27ae60;">BIENVENIDO, ${nombre.toUpperCase()}.</strong><br> ¿CONFIRMAS TU ASISTENCIA?</p>
+                    <button onclick="confirmarAsistencia('${nombre}', 'Sí')">✅ SÍ</button>
+                    <button onclick="confirmarAsistencia('${nombre}', 'No')">❌ NO</button>
+                `;
+            } else {
+                mensaje.innerHTML = "<span style='color: red;'>⚠ LO SENTIMOS, TU NOMBRE NO ESTÁ EN LA LISTA DE INVITADOS.</span>";
+            }
+        }
 
         function confirmarAsistencia(nombre, respuesta) {
-            if (!confirmados.includes(nombre)) {
-                fetch("https://script.google.com/macros/s/AKfycbxC15kwGraxBNf0lajdXkbcLRl0McTWPoqHdIKiGTWSSov-crYusdG-voSDDZG5_Qgfqg/exec", {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ nombre: nombre, respuesta: respuesta })
-                })
-                .then(response => response.text())
-                .then(text => {
-                    if (text.includes("Error: Ya confirmaste tu asistencia")) {
-                        mensaje.innerHTML = "<p style='color: red;'>❗ Ya confirmaste tu asistencia. No puedes volver a hacerlo.</p>";
-                    } else {
-                        confirmados.push(nombre);
-                        mensaje.innerHTML = "<p style='color: green;'>✅ Gracias por tu respuesta.</p>";
+            fetch("https://script.google.com/macros/s/AKfycbxC15kwGraxBNf0lajdXkbcLRl0McTWPoqHdIKiGTWSSov-crYusdG-voSDDZG5_Qgfqg/exec", {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nombre: nombre, respuesta: respuesta })
+            })
+            .then(() => {
+                for (let inv of invitados) {
+                    const nombrePartes = nombre.split(" ");
+                    const invitadoPartes = inv.split(" ");
+                    if (nombrePartes.some(parte => invitadoPartes.includes(parte))) {
+                        localStorage.setItem(inv, respuesta);
                     }
-                })
-                .catch(error => {
-                    mensaje.innerHTML = "<p style='color: red;'>❌ Hubo un error. Inténtalo de nuevo.</p>";
-                });
-            } else {
-                mensaje.innerHTML = "<p style='color: red;'>❗ Ya confirmaste tu asistencia.</p>";
-            }
-				
+                }
+                document.getElementById("mensaje").innerHTML = "<p style='color: green;'>✅ Gracias por tu respuesta. No puedes modificarla.</p>";
+            })
+            .catch(() => {
+                document.getElementById("mensaje").innerHTML = "<p style='color: red;'>❌ Hubo un error. Inténtalo de nuevo.</p>";
+            });
         }
+
+        // localStorage.clear(); // Descomenta esta línea cuando quieras borrar las confirmaciones almacenadas
+		
+		
     </script>
 </head>
 <body>
-
     <div class="container">
         <img src="https://raw.githubusercontent.com/mamingarq/LOGO_BODA/main/LOGO_BODA.png" alt="Imagen de bienvenida" style="width: 100px; margin-bottom: 10px;">
         <h2>Confirmación de Asistencia</h2>
-        <p>Ingresa tu primer nombre y apellido (sin tildes):</p>
-        <input type="text" id="nombre" placeholder="Ejemplo: ana salazar">
+        <p>Ingresa tu Nombre y Apellido:</p>
+        <input type="text" id="nombre" placeholder="Ejemplo: Ana Maria Salazar">
         <button onclick="verificarInvitado()">Verificar</button>
         <p id="mensaje"></p>
     </div>
-
 </body>
 </html>
