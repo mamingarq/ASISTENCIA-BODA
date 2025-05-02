@@ -69,7 +69,25 @@
             return texto.normalize("NFD").replace(/[̀-ͯ]/g, ""); // Quita tildes
         }
 
-        const invitados = ["iván mateo muñoz martinez", "ana maria salazar torres", "luz adriana torres cardona", "josé escobar"].map(removerTildes);
+        const invitados = ["iván mateo muñoz martinez", "ana maria salazar torres", "luz adriana torres cardona", "maria lucy cardona garzón", "marlene torres cardona", 
+						"efrain botero", "luisa fernanda silva torres", "federico alzate silva", "roberto torres cardona", "adriana lucia ospina bueno", "gabriela salazar patiño", 
+						"amparo salazar patiño", "amanda salazar patiño", "Bertha cecilia salazar", "alberto cardona botero", "sofia cardona salazar", "laura cardona salazar", 
+						"juan esteban villegas osorio", "martha ruby salazar patiño", "cesar serna", "mario serna salazar", "paola andrea serna salazar", "randall emery", 
+						"bianca emery salazar", "andrea emery salazar", "thomas emery salazar", "olga salazar patiño", "orlando restrepo", "juliana restrepo salazar", 
+						"wilson morales", "juan alberto restrepo salazar", "paula salazar salazar", "samuel restrepo salazar", "simon restrepo salazar", "gonzalo salazar patiño", 
+						"martha isabel cairasco", "gustavo salazar patiño", "maria del socorro cortes", "guillermo salazar patiño", "maria eugenia duque", 
+						"juan guillermo salazar patiño", "daniela rojas", "shelly cardona grisales", "joshua bennett", "juanita montes ochoa", "juan martin echeverri giraldo", 
+						"daniela quiceno", "camilo orozco", "paula bolivar castro", "angelica betancur montes", "luisa fernanda quiñones diaz", "luis alfonso vinasco", "david ocampo", 
+						"daniela arango", "alejandro valencia marin", "maria alejandra herrera hurtado", "dora lopez", "cenelia yepes", "eduardo pusquin", "valentina villada quiceno", 
+						"etienne tomasena", "maria antonia arias acosta", "julio garcia", "gabriela ramirez", "estela martinez", "jonathan yesid martinez", "thomas martinez", 
+						"felipe martinez", "orlinda martinez", "gerardo alonso castro", "sandra patricia jimenez", "german augusto vega", "samuel vega jimenez", "mathias vega jimenez", 
+						"derly marladys valencia martinez", "juan esteban castaño valencia", "sara sofia castaño valencia", "cesar augusto castaño valencia", "magda valencia martinez", 
+						"juan david giraldo valencia", "jorge ivan muñoz escobar", "fabiola escobar", "estella muñoz", "cristian camilo santa muñoz", "diana marcela montealegre", 
+						"sandra santa muñoz", "jose jolmer escobar", "juan manuel escobar reyes", "ana sofia escobar reyes", "berthina escobar", "valentina osorio", "fernando martinez morales", 
+						"salome martinez", "maria jose londoño", "bayron martinez", "julian esteban aguirre", "jessika gomez", "lina maria carmona", "pedro nel carvajal", "yina paola gonzales", 
+						"kevin daza", "alejandra montes herrera", "jorge ivan calderon", "alejandra maria lopez", "juan felipe buchelly", "viviana paola calderon", "maria fernanda loaiza", 
+						"juan david montoya", "daniel rojas", "steven villegas alarcon", "gladys rivera", "alejandro valencia ocampo", "danny hernandez", "brahian giraldo", "oscar giraldo", 
+						"luis fernando cardona", "wilder iberson escobar", "yulieth clavijo alzate","daniela orozco", "felipe galvis"].map(removerTildes);
 
         function verificarInvitado() {
             const nombre = removerTildes(document.getElementById("nombre").value.trim().toLowerCase());
