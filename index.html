@@ -1,75 +1,79 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmación de Asistencia</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Confirmación de Asistencia</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      color: #333;
+      padding: 20px;
+    }
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            color: #333;
-            padding: 20px;
-        }
+    .container {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        .container {
-            background: white;
-            padding: 20px;
-            max-width: 400px;
-            margin: auto;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
+    h2 {
+      color: #2c3e50;
+    }
 
-        h2 {
-            color: #2c3e50;
-        }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
 
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+    button {
+      font-size: 18px;
+      padding: 12px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin: 5px;
+    }
 
-        button {
-            font-size: 18px;
-            padding: 12px 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            margin: 5px;
-        }
+    button:hover {
+      background-color: #2980b9;
+      transform: scale(1.05);
+    }
 
-        button:hover {
-            background-color: #2980b9;
-            transform: scale(1.05);
-        }
+    button:active {
+      transform: scale(0.95);
+    }
 
-        button:active {
-            transform: scale(0.95);
-        }
+    #mensaje {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
 
-        #mensaje {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-    </style>
+  <script>
+    function removerTildes(texto) {
+      return texto
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z\s]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
 
-    <script>
-        function removerTildes(texto) {
-            return texto.normalize("NFD").replace(/[̀-ͯ]/g, ""); // Quita tildes
-        }
-
-        const invitados = ["iván mateo muñoz martinez", "ana maria salazar torres", "luz adriana torres cardona", "maria lucy cardona garzón", "marlene torres cardona", 
+    const invitadosOriginales = ["iván mateo muñoz martinez", "ana maria salazar torres", "luz adriana torres cardona", "maria lucy cardona garzón", "marlene torres cardona", 
 						"efrain botero", "luisa fernanda silva torres", "federico alzate silva", "roberto torres cardona", "adriana lucia ospina bueno", "gabriela salazar patiño", 
 						"amparo salazar patiño", "amanda salazar patiño", "Bertha cecilia salazar", "alberto cardona botero", "sofia cardona salazar", "laura cardona salazar", 
 						"juan esteban villegas osorio", "martha ruby salazar patiño", "cesar serna", "mario serna salazar", "paola andrea serna salazar", "randall emery", 
@@ -86,73 +90,74 @@
 						"sandra santa muñoz", "jose jolmer escobar", "juan manuel escobar reyes", "ana sofia escobar reyes", "berthina escobar", "valentina osorio", "fernando martinez morales", 
 						"salome martinez", "maria jose londoño", "bayron martinez", "julian esteban aguirre", "jessika gomez", "lina maria carmona", "pedro nel carvajal", "yina paola gonzales", 
 						"kevin daza", "alejandra montes herrera", "jorge ivan calderon", "alejandra maria lopez", "juan felipe buchelly", "viviana paola calderon", "maria fernanda loaiza", 
-						"juan david montoya", "daniel rojas", "steven villegas alarcon", "gladys rivera", "alejandro valencia ocampo", "danny hernandez", "brahian giraldo", "oscar giraldo", 
-						"luis fernando cardona", "wilder iberson escobar", "yulieth clavijo alzate","daniela orozco", "felipe galvis"].map(removerTildes);
+						"juan david montoya", "daniel rojas", "steven villegas alarcon", "gladys rivera", "Jhony alejandro valencia ocampo", "danny hernandez", "brahian giraldo", "oscar giraldo", 
+						"luis fernando cardona", "wilder iberson escobar", "yulieth clavijo alzate","daniela orozco", "felipe galvis"];
 
-        function verificarInvitado() {
-            const nombre = removerTildes(document.getElementById("nombre").value.trim().toLowerCase());
-            const mensaje = document.getElementById("mensaje");
-            
-            for (let inv of invitados) {
-                const nombrePartes = nombre.split(" ");
-                const invitadoPartes = inv.split(" ");
-                if (nombrePartes.some(parte => invitadoPartes.includes(parte)) && localStorage.getItem(inv)) {
-                    mensaje.innerHTML = "<p style='color: red;'>❗ Ya confirmaste tu asistencia. No puedes volver a hacerlo.</p>";
-                    return;
-                }
-            }
+    const invitados = invitadosOriginales.map(nombre => removerTildes(nombre.toLowerCase()));
 
-            const encontrado = invitados.some(inv => {
-                const nombrePartes = nombre.split(" ");
-                return nombrePartes.every(parte => inv.includes(parte));
-            });
+    function verificarInvitado() {
+  const nombreOriginal = document.getElementById("nombre").value.trim();
+  const nombre = removerTildes(nombreOriginal.toLowerCase());
+  const mensaje = document.getElementById("mensaje");
+  const nombrePartes = nombre.split(" ");
 
-            if (encontrado) {
-                mensaje.innerHTML = `
-                    <p><strong style="color:#27ae60;">BIENVENIDO, ${nombre.toUpperCase()}.</strong><br> ¿CONFIRMAS TU ASISTENCIA?</p>
-                    <button onclick="confirmarAsistencia('${nombre}', 'Sí')">✅ SÍ</button>
-                    <button onclick="confirmarAsistencia('${nombre}', 'No')">❌ NO</button>
-                `;
-            } else {
-                mensaje.innerHTML = "<span style='color: red;'>⚠ LO SENTIMOS, TU NOMBRE NO ESTÁ EN LA LISTA DE INVITADOS.</span>";
-            }
-        }
+  // Buscar coincidencia real (todos los términos del input estén dentro del nombre del invitado)
+  let coincidencia = null;
 
-        function confirmarAsistencia(nombre, respuesta) {
-            fetch("https://script.google.com/macros/s/AKfycbxC15kwGraxBNf0lajdXkbcLRl0McTWPoqHdIKiGTWSSov-crYusdG-voSDDZG5_Qgfqg/exec", {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nombre: nombre, respuesta: respuesta })
-            })
-            .then(() => {
-                for (let inv of invitados) {
-                    const nombrePartes = nombre.split(" ");
-                    const invitadoPartes = inv.split(" ");
-                    if (nombrePartes.some(parte => invitadoPartes.includes(parte))) {
-                        localStorage.setItem(inv, respuesta);
-                    }
-                }
-                document.getElementById("mensaje").innerHTML = "<p style='color: green;'>✅ Gracias por tu respuesta. No puedes modificarla.</p>";
-            })
-            .catch(() => {
-                document.getElementById("mensaje").innerHTML = "<p style='color: red;'>❌ Hubo un error. Inténtalo de nuevo.</p>";
-            });
-        }
+  for (let inv of invitados) {
+    const invitadoPartes = inv.split(" ");
+    const match = nombrePartes.every(parte => invitadoPartes.includes(parte));
+    if (match) {
+      coincidencia = inv;
+      break;
+    }
+  }
 
-        // localStorage.clear(); // Descomenta esta línea cuando quieras borrar las confirmaciones almacenadas
-		
-		
-    </script>
+  // Si ya está confirmado (exactamente ese invitado)
+  if (coincidencia && localStorage.getItem(coincidencia)) {
+    mensaje.innerHTML = "<p style='color: red;'>❗ Ya confirmaste tu asistencia. No puedes volver a hacerlo.</p>";
+    return;
+  }
+
+  if (coincidencia) {
+    mensaje.innerHTML = `
+      <p><strong style="color:#27ae60;">BIENVENIDO, ${nombreOriginal.toUpperCase()}.</strong><br> ¿CONFIRMAS TU ASISTENCIA?</p>
+      <button onclick="confirmarAsistencia('${coincidencia}', 'Sí')">✅ SÍ</button>
+      <button onclick="confirmarAsistencia('${coincidencia}', 'No')">❌ NO</button>
+    `;
+  } else {
+    mensaje.innerHTML = "<span style='color: red;'>⚠ LO SENTIMOS, TU NOMBRE NO ESTÁ EN LA LISTA DE INVITADOS.</span>";
+  }
+}
+
+function confirmarAsistencia(nombre, respuesta) {
+  fetch("https://script.google.com/macros/s/AKfycbxC15kwGraxBNf0lajdXkbcLRl0McTWPoqHdIKiGTWSSov-crYusdG-voSDDZG5_Qgfqg/exec", {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nombre: nombre, respuesta: respuesta })
+  })
+  .then(() => {
+    localStorage.setItem(nombre, respuesta);
+    document.getElementById("mensaje").innerHTML = "<p style='color: green;'>✅ Gracias por tu respuesta. No puedes modificarla.</p>";
+  })
+  .catch(() => {
+    document.getElementById("mensaje").innerHTML = "<p style='color: red;'>❌ Hubo un error. Inténtalo de nuevo.</p>";
+  });
+}
+
+
+      // localStorage.clear(); // Descomenta para resetear confirmaciones
+  </script>
 </head>
 <body>
-    <div class="container">
-        <img src="https://raw.githubusercontent.com/mamingarq/LOGO_BODA/main/LOGO_BODA.png" alt="Imagen de bienvenida" style="width: 100px; margin-bottom: 10px;">
-        <h2>Confirmación de Asistencia</h2>
-        <p>Ingresa tu Nombre y Apellido:</p>
-        <input type="text" id="nombre" placeholder="Ejemplo: Ana Maria Salazar">
-        <button onclick="verificarInvitado()">Verificar</button>
-        <p id="mensaje"></p>
-    </div>
+  <div class="container">
+    <img src="https://raw.githubusercontent.com/mamingarq/LOGO_BODA/main/LOGO_BODA.png" alt="Logo Boda" style="width: 100px; margin-bottom: 10px;">
+    <h2>Confirmación de Asistencia</h2>
+    <label for="nombre">Ingresa tu Nombre y Apellido:</label>
+    <input type="text" id="nombre" name="nombre" placeholder="Ejemplo: Ana Maria Salazar" />
+    <button onclick="verificarInvitado()">Verificar</button>
+    <p id="mensaje"></p>
+  </div>
 </body>
 </html>
