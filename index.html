@@ -73,6 +73,9 @@
         .trim();
     }
 
+
+	const fechaLimite = new Date("2025-20-08T23:59:59");  
+ 
     const invitadosOriginales = ["iván mateo muñoz martinez", "ana maria salazar torres", "luz adriana torres cardona", "maria lucy cardona garzón", "marlene torres cardona", 
 						"efrain botero", "luisa fernanda silva torres", "federico alzate silva", "roberto torres cardona", "adriana lucia ospina bueno", "gabriela salazar patiño", 
 						"amparo salazar patiño", "amanda salazar patiño", "Bertha cecilia salazar", "alberto cardona botero", "sofia cardona salazar", "laura cardona salazar", 
@@ -96,9 +99,17 @@
     const invitados = invitadosOriginales.map(nombre => removerTildes(nombre.toLowerCase()));
 
     function verificarInvitado() {
+  const mensaje = document.getElementById("mensaje");
+
+ 	const hoy = new Date();
+    	if (hoy > fechaLimite) {
+      		mensaje.innerHTML = "<p style='color: red;'>❌ La fecha máximo de confirmación ya pasó, ya no puedes confirmar.</p>";
+      		return;
+    }
+
+		
   const nombreOriginal = document.getElementById("nombre").value.trim();
   const nombre = removerTildes(nombreOriginal.toLowerCase());
-  const mensaje = document.getElementById("mensaje");
   const nombrePartes = nombre.split(" ");
 
   // Buscar coincidencia real (todos los términos del input estén dentro del nombre del invitado)
@@ -161,3 +172,4 @@ function confirmarAsistencia(nombre, respuesta) {
   </div>
 </body>
 </html>
+
